@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102b45"><title>西鉄バス 行き先番号ゲーム Ver.1.1</title>
+<style>
+:root{--navy:#102b45;--blue:#17618b;--ink:#172c3e;--muted:#607487;--gold:#ffe06a}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#e9f3f8,#f8fbfd);font-family:system-ui,-apple-system,"Yu Gothic",sans-serif;color:var(--ink)}
+header{background:var(--navy);color:white;padding:15px max(16px,calc((100% - 1000px)/2));display:flex;justify-content:space-between;align-items:center;gap:10px}
+.brand{font-weight:900;letter-spacing:.06em}.brand small{display:block;color:#b9d6e8;font-size:10px;letter-spacing:.15em}
+.tag{font-size:11px;background:#d9edf8;color:#174765;border-radius:99px;padding:6px 10px;font-weight:800}
+main{max-width:1000px;margin:auto;padding:20px 15px 40px}.hero{background:linear-gradient(120deg,#102b45,#17618b);color:white;border-radius:20px;padding:24px;box-shadow:0 10px 25px #102b4522}
+.kicker{font-size:11px;color:#c5e5f5;letter-spacing:.18em;font-weight:800}.hero h1{font-size:clamp(27px,5vw,42px);margin:8px 0}.hero p{color:#deedf6;margin:0}.led{display:inline-block;margin-top:17px;padding:10px 14px;border-radius:7px;background:#10191e;color:var(--gold);font:900 19px ui-monospace,monospace;letter-spacing:.08em}
+.panel{background:white;border:1px solid #d8e5ed;border-radius:17px;padding:19px;margin-top:17px;box-shadow:0 4px 15px #123b5b0a}
+h2{margin:0 0 8px;font-size:20px}.muted{color:var(--muted);font-size:13px;line-height:1.65}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:11px;margin-top:15px}
+button,select{font:inherit}button{cursor:pointer;border:0;border-radius:11px;padding:13px 15px;font-weight:800}
+.mode{display:flex;gap:11px;text-align:left;align-items:flex-start;background:#f4f9fc;border:1px solid #dbe8ef;color:var(--ink);min-height:83px}.mode b{display:block}.mode small{display:block;color:var(--muted);font-weight:500;margin-top:4px;line-height:1.4}.emoji{font-size:25px}
+.primary{background:var(--blue);color:white}.secondary{background:#eaf2f7;color:#174765;border:1px solid #d5e4ed}.hidden{display:none!important}
+.row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.row label{flex:1;min-width:130px;font-size:13px;font-weight:800}select{display:block;width:100%;margin-top:6px;padding:11px;border:1px solid #cbdce6;border-radius:9px;background:white}
+.topline{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted);font-weight:800}.progress{height:8px;background:#e7eff4;border-radius:99px;margin:12px 0 18px;overflow:hidden}.bar{height:100%;width:0;background:#e5b52f}
+.question{background:#102b45;color:white;text-align:center;padding:22px;border-radius:14px;margin:15px 0}.question .big{font-size:clamp(27px,6vw,44px);font-weight:950;color:var(--gold);line-height:1.25}.question p{color:#d8e8f2;margin:9px 0 0}.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.answer{background:#f4f8fb;border:2px solid #dce8ef;text-align:left;color:var(--ink);line-height:1.45}.answer:disabled{cursor:default}.answer.correct{background:#e9f8ef;border-color:#249965}.answer.wrong{background:#fff0f0;border-color:#d45a5a}
+.feedback{margin-top:13px;padding:13px;border-radius:10px;font-weight:750;line-height:1.6}.good{background:#e8f7ef;color:#17633e}.bad{background:#fff1e9;color:#93431e}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:15px 0}.stat{background:#f0f6f9;border-radius:11px;text-align:center;padding:13px}.stat strong{display:block;font-size:27px;color:#15547a}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px 7px;border-bottom:1px solid #e4edf2;text-align:left;vertical-align:top}th{color:#476176;background:#f5f9fb}
+footer{text-align:center;padding:18px;color:#708394;font-size:11px}
+@media(max-width:560px){header{padding:13px 14px}.hero{padding:20px}.panel{padding:15px}.answers{grid-template-columns:1fr}table{font-size:12px}}
+</style></head>
+<body>
+<header><div class="brand">西鉄バス<small>NISHITETSU BUS QUIZ</small></div><span class="tag">福岡都市圏データ版 Ver.1.1</span></header>
+<main>
+<section class="hero"><div class="kicker">FUKUOKA METROPOLITAN AREA</div><h1>行き先番号ゲーム</h1><p>番号グループ・主な行先・経由ルートを覚えよう。</p><div class="led">NISHITETSU BUS　行先案内</div></section>
+<section id="home" class="panel"><h2>メインメニュー</h2><p class="muted">博多バスターミナルと博多駅前の公式のりば案内をもとに、乗り場別の番号グループを収録。</p><div class="grid">
+<button class="mode" onclick="choose('number')"><span class="emoji">🔢</span><span><b>番号から主な行先</b><small>番号グループを見て主な行先を選ぶ</small></span></button>
+<button class="mode" onclick="choose('destination')"><span class="emoji">🎯</span><span><b>行先から番号グループ</b><small>主な行先から番号グループを選ぶ</small></span></button>
+<button class="mode" onclick="choose('led')"><span class="emoji">🟨</span><span><b>LED表示クイズ</b><small>行先表示風の画面で回答</small></span></button>
+<button class="mode" onclick="choose('route')"><span class="emoji">🗺️</span><span><b>経由ルートクイズ</b><small>明治通り・昭和通りなどを判定</small></span></button>
+<button class="mode" onclick="choose('challenge')"><span class="emoji">⏱️</span><span><b>実戦チャレンジ</b><small>10問連続でスコアに挑戦</small></span></button>
+<button class="mode" onclick="choose('free')"><span class="emoji">📖</span><span><b>学習モード</b><small>解説を確認しながら出題</small></span></button>
+</div></section>
+<section id="setup" class="panel hidden"><h2 id="setupTitle">ゲーム設定</h2><p class="muted">問題数を選択してスタート。</p><div class="row"><label>難易度<select id="difficulty"><option>初級</option><option selected>中級</option><option>上級</option><option>超上級</option></select></label><label>問題数<select id="count"><option>5</option><option selected>10</option><option>20</option></select></label></div><div class="row" style="margin-top:15px"><button class="primary" onclick="begin()">ゲーム開始</button><button class="secondary" onclick="home()">戻る</button></div></section>
+<section id="game" class="panel hidden"><div class="topline"><span id="modeName">クイズ</span><span id="counter">1/10</span><span id="score">正解 0</span></div><div class="progress"><div id="bar" class="bar"></div></div><div id="question" class="question"></div><div id="answers" class="answers"></div><div id="feedback" aria-live="polite"></div><div class="row" style="margin-top:14px"><button id="next" class="primary hidden" onclick="next()">次へ →</button><button class="secondary" onclick="home()">メニューへ</button></div></section>
+<section id="result" class="panel hidden"><h2>結果発表</h2><p class="muted">今回のチャレンジ結果</p><div class="stats"><div class="stat"><strong id="points">0</strong>得点</div><div class="stat"><strong id="correct">0</strong>正解</div><div class="stat"><strong id="rate">0%</strong>正答率</div></div><p id="comment"></p><div class="row"><button class="primary" onclick="begin()">もう一度</button><button class="secondary" onclick="home()">メニューへ</button></div></section>
+<section class="panel"><h2>今回の収録データ</h2><p class="muted">公式のりば案内に掲載された「乗り場・バス番号・主な行先」の組み合わせ。番号ごとの全停留所・全運行系統を意味するものではありません。</p><div style="overflow-x:auto"><table><thead><tr><th>出発場所</th><th>のりば</th><th>掲載番号</th><th>主な行先・経由</th></tr></thead><tbody id="dataTable"></tbody></table></div><p class="muted">※公式資料の掲載内容をクイズ向けに要約。臨時便・曜日・運行変更などは別途確認が必要です。</p><p><a href="https://www.h-bt.jp/bus/bus-stop-guide.html" target="_blank" rel="noopener">博多バスターミナル公式 のりば案内</a> ／ <a href="https://www.h-bt.jp/bus/hakata-station.html" target="_blank" rel="noopener">博多駅前市内のりば案内</a> ／ <a href="https://www.nishitetsu.jp/bus/rosen/rosenmap/" target="_blank" rel="noopener">西鉄公式 路線図</a></p></section>
+</main><footer>ファン制作・非公式の学習用プロトタイプ</footer>
+<script>
+const routes=[
+{origin:"博多バスターミナル",stand:"1",nums:"15・29・29I・29N",via:"県庁・名島方面",dest:"県庁・名島・香椎・城浜団地・千鳥橋・ゆめタウン博多・アイランドシティ・香椎浜・こども病院",short:"県庁・名島・香椎・アイランドシティ方面"},
+{origin:"博多バスターミナル",stand:"2",nums:"3・特快3・12・13・56・57",via:"明治通り経由",dest:"博多リバレイン・博多座・天神・西新・早良営業所・早良高校・陽光台・福大・片江営業所・桧原営業所・福大病院",short:"明治通り経由・天神・西新・福大方面"},
+{origin:"博多バスターミナル",stand:"3",nums:"32",via:"昭和通り経由",dest:"蔵本・天神・大濠公園",short:"昭和通り経由・蔵本・天神・大濠公園"},
+{origin:"博多バスターミナル",stand:"4",nums:"113・快速113・200・201・202・203・204・205・208",via:"国体道路経由",dest:"キャナルシティ博多・六本松・荒江・原・油山・片江営業所・桧原営業所・四箇田団地・木の葉モール・拾六町団地・野方・早良営業所・金武車庫",short:"国体道路経由・六本松・荒江・野方方面"},
+{origin:"博多バスターミナル",stand:"5",nums:"68・68-1・312・503・504・505・506・525・526・直行藤崎・四箇田",via:"都市高速経由／天神経由",dest:"室見団地・室住団地・ウエストH・拾六町・野方・橋本・天神（三越前）・福岡タワー・博物館（北口）・藤崎・四箇田・福浜",short:"都市高速経由・室見・藤崎・福岡タワー方面"},
+{origin:"博多バスターミナル",stand:"6",nums:"306",via:"みずほPayPayドーム臨時バス案内",dest:"みずほPayPayドーム・九州医療センター・ヒルトン福岡シーホークホテル・福岡タワー・博物館（北口）・藤崎・四箇田・金武営業所",short:"みずほPayPayドーム・福岡タワー方面"},
+{origin:"博多バスターミナル",stand:"12",nums:"41・43・46・46L",via:"板付・金隈方面",dest:"板付・金隈・桜並木駅・イオン大野城・竹下・井尻・ららぽーと福岡",short:"板付・金隈・井尻・ららぽーと福岡方面"},
+{origin:"博多バスターミナル",stand:"13",nums:"17・40・40L・L・44・45",via:"山王・板付団地方面",dest:"山王公園・山王1丁目・扇町・東光寺北口・板付団地・井尻駅・昇町・桜並木駅・ららぽーと福岡",short:"山王・板付団地・井尻・ららぽーと福岡方面"},
+{origin:"博多バスターミナル",stand:"14",nums:"30・32・33・37・38・39・39B・73",via:"志免・宇美方面",dest:"坂瀬・桜丘・志免・宇美・ひばりが丘・四王寺坂・流通センター・イオンモール福岡・福岡空港国内線",short:"志免・宇美・福岡空港国内線方面"},
+{origin:"博多駅前（Aのりば）",stand:"A",nums:"6-1・47・48・305・300・301・333・303・急行",via:"鳥飼・大濠中高前／大橋・美野島／福岡タワー・PayPayドーム方面",dest:"鳥飼・大濠中高前・NHK前・大橋・美野島・住吉4丁目・がんセンター・野多目・那珂川・老司・福岡タワー・医師会館・ヒルトン福岡シーホークホテル・西南中高前・福岡市博物館・PayPayドーム・マリノアシティ・天神",short:"大橋・美野島・福岡タワー・PayPayドーム方面"},
+{origin:"博多駅前（B・C・Dのりば）",stand:"B・C・D",nums:"9～19・214・16・46・50・65・64・66・67・69",via:"薬院・柳橋・渡辺通り／六本松・桜坂／高宮・平尾方面",dest:"薬院・柳橋・渡辺通り1丁目・住吉・南薬院・六本松・桜坂・福岡大学・竹下・アサヒビール・井尻・高宮・平尾・自動車試験場・百年橋・清水・那の川・野間・日赤前・平和・長住・那珂川・屋形原・若久・中尾",short:"薬院・六本松・高宮・平尾・野間方面"},
+{origin:"博多駅前（Eのりば）",stand:"E",nums:"9・10",via:"九大病院・県庁方面",dest:"九大病院・県庁",short:"九大病院・県庁方面"},
+{origin:"博多駅前（Fのりば）",stand:"F",nums:"99・88",via:"博多埠頭・中央埠頭方面",dest:"博多埠頭・国際センター・中央埠頭・マリンメッセ・国際会議場・サンパレス・神屋町（原三信病院）・石城町",short:"博多埠頭・中央埠頭・マリンメッセ方面"}
+];
+const modes={number:"番号から主な行先",destination:"行先から番号グループ",led:"LED表示クイズ",route:"経由ルートクイズ",challenge:"実戦チャレンジ",free:"学習モード"};
+let mode="number",qs=[],i=0,ok=0,answered=false;
+const $=x=>document.getElementById(x);
+function screen(id){["home","setup","game","result"].forEach(s=>$(s).classList.toggle("hidden",s!==id))}
+function home(){screen("home")}
+function choose(m){mode=m;$("setupTitle").textContent=modes[m]+"：設定";screen("setup")}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function begin(){let n=mode==="challenge"?10:Number($("count").value);qs=shuffle(Array.from({length:n},(_,k)=>routes[k%routes.length]));i=0;ok=0;screen("game");render()}
+function render(){answered=false;let r=qs[i];$("modeName").textContent=modes[mode];$("counter").textContent=(i+1)+" / "+qs.length;$("score").textContent="正解 "+ok;$("bar").style.width=(i/qs.length*100)+"%";$("feedback").innerHTML="";$("next").classList.add("hidden");
+let prompt="",answer="",opts=[];
+if(mode==="number"||mode==="challenge"){prompt=r.nums;answer=r.short;opts=shuffle([r,...routes.filter(x=>x!==r)]).slice(0,4).map(x=>x.short)}
+else if(mode==="destination"){prompt=r.short;answer=r.nums;opts=shuffle([r,...routes.filter(x=>x!==r)]).slice(0,4).map(x=>x.nums)}
+else if(mode==="route"){prompt=r.via;answer=r.nums;opts=shuffle([r,...routes.filter(x=>x!==r)]).slice(0,4).map(x=>x.nums)}
+else if(mode==="led"){prompt="["+r.nums+"]<br>"+r.short;answer=r.nums;opts=shuffle([r,...routes.filter(x=>x!==r)]).slice(0,4).map(x=>x.nums)}
+else{prompt=r.nums;answer="番号グループと主な行先をセットで確認する";opts=shuffle(["番号グループと主な行先をセットで確認する","同じ番号なら必ず全便が同じ経由地を通る","のりば番号がバスの行先番号を表している","臨時便の案内も通常便と必ず同じ"]).slice(0,4)}
+$("question").innerHTML='<div class="big">'+esc(prompt)+'</div><p>'+esc(mode==="number"||mode==="challenge"?"この番号グループの主な行先は？":mode==="destination"?"この行先グループに掲載された番号は？":mode==="route"?"この経由ルートの番号グループは？":mode==="led"?"表示内容に対応する番号グループは？":"このデータを確認するときに大切なことは？")+'</p>';
+$("answers").innerHTML="";opts.forEach(v=>{let b=document.createElement("button");b.className="answer";b.textContent=v;b.onclick=()=>pick(b,v,answer,r);$("answers").appendChild(b)})}
+function pick(btn,v,a,r){if(answered)return;answered=true;let good=v===a;if(good)ok++;[...$("answers").children].forEach(b=>{b.disabled=true;if(b.textContent===a)b.classList.add("correct")});if(!good)btn.classList.add("wrong");$("score").textContent="正解 "+ok;
+let detail="のりば "+r.stand+"番： "+r.nums+" ／ "+r.via+"。主な行先："+r.dest;
+$("feedback").innerHTML='<div class="feedback '+(good?"good":"bad")+'">'+(good?"正解！":"不正解。正解は「"+esc(a)+"」")+'<br><small>'+esc(detail)+'</small></div>';$("next").textContent=i===qs.length-1?"結果を見る →":"次の問題へ →";$("next").classList.remove("hidden")}
+function next(){if(i<qs.length-1){i++;render()}else finish()}
+function finish(){screen("result");let rate=Math.round(ok/qs.length*100);$("points").textContent=ok*100;$("correct").textContent=ok+"/"+qs.length;$("rate").textContent=rate+"%";$("comment").textContent=rate===100?"全問正解！西鉄バスの知識がばっちり！":rate>=70?"いい調子！公式案内も見ながら覚えていこう。":"解説を確認して、もう一度挑戦しよう！"}
+$("dataTable").innerHTML=routes.map(r=>'<tr><td>'+esc(r.origin)+'</td><td>'+esc(r.stand)+'</td><td>'+esc(r.nums)+'</td><td>'+esc(r.via)+'<br>'+esc(r.dest)+'</td></tr>').join("");
+</script></body></html>
